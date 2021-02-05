@@ -48,7 +48,7 @@ class resblock(nn.Module):
         return out
 
 class network_9layers(nn.Module):
-    def __init__(self, num_classes=79077):
+    def __init__(self, num_classes=1042):
         super(network_9layers, self).__init__()
         self.features = nn.Sequential(
             mfm(1, 48, 5, 1, 2), 
