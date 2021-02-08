@@ -18,7 +18,7 @@ import cv2
 ############################
 ## The inputs are 2 images (same subject, different pose)
 ############################
-class MultiPIE(data.Dataset):
+class CASPEALR1(data.Dataset):
     def __init__(self, args, name='', train=True, testPose=[60]):
         self.args = args
         self.name = name
