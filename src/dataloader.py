@@ -68,7 +68,7 @@ class _MSDataLoaderIter(_DataLoaderIter):
                 multiprocessing.Queue() for _ in range(self.num_workers)
             ]
             self.worker_queue_idx = 0
-            self.worker_result_queue = multiprocessing.SimpleQueue()
+            self.worker_result_queue = multiprocessing.Queue()
             self.batches_outstanding = 0
             self.worker_pids_set = False
             self.shutdown = False
