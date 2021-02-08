@@ -135,8 +135,8 @@ class network_29layers_v2(nn.Module):
         self.block4   = self._make_layer(block, layers[3], 128, 128)
         self.group4   = group(128, 128, 3, 1, 1)
         self.fc       = nn.Linear(8*8*128, 256)
-        self.fc2_MS = nn.Linear(256, num_classes, bias=False)
-        # self.fc2 = nn.Linear(256, num_classes, bias=False)
+        # self.fc2_MS = nn.Linear(256, num_classes, bias=False)
+        self.fc2 = nn.Linear(256, num_classes, bias=False)
             
     def _make_layer(self, block, num_blocks, in_channels, out_channels):
         layers = []
@@ -165,8 +165,8 @@ class network_29layers_v2(nn.Module):
         x = x.view(x.size(0), -1)
         fc = self.fc(x)
         x = F.dropout(fc, training=self.training)
-        out = self.fc2_MS(fc)
-        # out = self.fc2(x)
+        # out = self.fc2_MS(fc)
+        out = self.fc2(x)
         return out, fc
 
 def LightCNN_9Layers(**kwargs):

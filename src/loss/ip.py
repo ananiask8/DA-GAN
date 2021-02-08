@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from torchvision import transforms, utils
 
-from model.light_cnn import LightCNN_29Layers_v3
+from model.light_cnn import LightCNN_29Layers_v2
 
 import numpy as np
 import cv2
@@ -14,7 +14,7 @@ import cv2
 class IP(nn.Module):
     def __init__(self, args):
         super(IP, self).__init__()
-        self.model_recognition = LightCNN_29Layers_v3(num_classes=1043)
+        self.model_recognition = LightCNN_29Layers_v2(num_classes=1043)
         self.model_recognition = torch.nn.DataParallel(self.model_recognition).cuda()
         checkpoint = torch.load("lightCNN_pretrain.pth.tar")
         self.model_recognition.load_state_dict(checkpoint['state_dict'])
