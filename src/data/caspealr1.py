@@ -69,7 +69,7 @@ class CASPEALR1(data.Dataset):
             if pose in [90, -90, 75, -75]:
                 continue
 
-            hr_f = hr_p[0:10] + "051" + hr_p[13::]
+            hr_f = hr_p[0:14] + "00_PM" + hr_p[19::]
             names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
             names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
@@ -94,7 +94,7 @@ class CASPEALR1(data.Dataset):
             if pose not in self.testPose:
                 continue
 
-            hr_f = hr_p[0:10] + "051" + hr_p[13::]
+            hr_f = hr_p[0:14] + "00_PM" + hr_p[19::]
             names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
             names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
@@ -178,13 +178,17 @@ class CASPEALR1(data.Dataset):
         mask_3parts = np.zeros([3, patch_size, patch_size], dtype=np.float32)
 
         front_filenames = os.path.splitext(os.path.basename(f_hrs))[0]
-        mask_all = imageio.imread(os.path.join(self.dir_mask, front_filenames + '_masks3.png'))
+        mask_all = imageio.imread(os.path.join(self.dir_mask, front_filenames + '.png'))
+        print(mask_3parts.shape)
+        print(mask_all.shape)
         for i in range(len(mask_3parts)):
+            print(np.where(mask_all == i + 1))
             mask_3parts[i][np.where(mask_all == i + 1)] = 1
 
         # inverse image if pose < 0
-        pose = filenames.split('_')[3]
-        if pose in ['080', '090', '110', '120', '130', '140']:
+        pose = int(filenames.split('_')[3][-3:])
+        print(pose)
+        if pose < 0:
             hrs = hrs[:, :, ::-1, :]
             lrs = lrs[:, :, ::-1, :]
             mask_3parts = mask_3parts[:, :, ::-1]
