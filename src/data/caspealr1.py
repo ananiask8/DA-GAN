@@ -178,11 +178,11 @@ class CASPEALR1(data.Dataset):
         mask_3parts = np.zeros([3, patch_size, patch_size], dtype=np.float32)
 
         front_filenames = os.path.splitext(os.path.basename(f_hrs))[0]
-        mask_all = imageio.imread(os.path.join(self.dir_mask, front_filenames + '.png'))
-        print(mask_3parts.shape)
+        mask_all = imageio.imread(os.path.join(self.dir_mask, front_filenames + '_masks3.png'))
+        print(len(mask_3parts), mask_3parts.shape)
         print(mask_all.shape)
         for i in range(len(mask_3parts)):
-            print(np.where(mask_all == i + 1))
+            print(i, np.where(mask_all == i + 1))
             mask_3parts[i][np.where(mask_all == i + 1)] = 1
 
         # inverse image if pose < 0
