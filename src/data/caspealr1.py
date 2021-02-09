@@ -58,7 +58,6 @@ class CASPEALR1(data.Dataset):
     def _scan(self):
         names_hr = []
         names_lr = []
-        print(self.dir_hr_pose)
         all_hr_pose_names = sorted(glob.glob(os.path.join(self.dir_hr_pose, '*.png')))
         for hr_pose_name in all_hr_pose_names:
             hr_p = hr_pose_name.split('/')[-1]
@@ -83,7 +82,6 @@ class CASPEALR1(data.Dataset):
     def _scan_test(self):
         names_hr = []
         names_lr = []
-        print(self.dir_hr_pose)
         all_hr_pose_names = sorted(glob.glob(os.path.join(self.dir_hr_pose, '*.png')))
         for hr_pose_name in all_hr_pose_names:
             hr_p = hr_pose_name.split('/')[-1]
@@ -133,13 +131,15 @@ class CASPEALR1(data.Dataset):
         mask_3parts = torch.from_numpy(mask_3parts.copy())
 
         # poseID = int(int(filenames.split('_')[3])/15)
-        subID = int(filenames.split('_')[0])
+        subID = int(filenames.split('_')[1])
         gallery_tensors = self.loadGallery(subID)  # torch.from_numpy(gallery).float()
 
         return lr_tensors, hr_tensors, gallery_tensors, mask_3parts, subID - 1, filenames
 
     def loadGallery(self, subID):
         gallery = cv2.imread(os.path.join(self.dir_gallery, "{:03d}_cropped.png".format(subID)), cv2.IMREAD_GRAYSCALE)
+        if gallery is None:
+            gallery = np.zeros((128, 128, 1))
         gallery = np.reshape(gallery, (128, 128, 1))
         gallery = gallery.transpose(2, 0, 1)
 
@@ -160,34 +160,32 @@ class CASPEALR1(data.Dataset):
             return idx
 
     def _load_file(self, idx, patch_size):
-        '''
+        """
         Read image from given image directory
         Return: 1 * H * W * C numpy array and list of corresponding filenames
         self.images_hr : hr_f
         self.images_lr : hr_p
-        '''
+        """
         idx = self._get_index(idx)
         f_hrs = self.images_hr[idx]
         f_lrs = self.images_lr[idx]
 
         filenames = os.path.splitext(os.path.basename(f_lrs))[0]
-        hrs = np.array([imageio.imread(hr_name) for hr_name in [f_hrs]])
-        lrs = np.array([imageio.imread(lr_name) for lr_name in [f_lrs]])
+
+        # For grayscale images need to add extra axis
+        hrs = np.array([imageio.imread(hr_name)[:, :, None].repeat(3, axis=2) for hr_name in [f_hrs]])
+        lrs = np.array([imageio.imread(lr_name)[:, :, None].repeat(3, axis=2) for lr_name in [f_lrs]])
 
         # load mask (# mask_all: 0 background, 1 hair, 2 face features, 3 skin)
         mask_3parts = np.zeros([3, patch_size, patch_size], dtype=np.float32)
 
         front_filenames = os.path.splitext(os.path.basename(f_hrs))[0]
         mask_all = imageio.imread(os.path.join(self.dir_mask, front_filenames + '_masks3.png'))
-        print(len(mask_3parts), mask_3parts.shape)
-        print(mask_all.shape)
         for i in range(len(mask_3parts)):
-            print(i, np.where(mask_all == i + 1))
             mask_3parts[i][np.where(mask_all == i + 1)] = 1
 
         # inverse image if pose < 0
         pose = int(filenames.split('_')[3][-3:])
-        print(pose)
         if pose < 0:
             hrs = hrs[:, :, ::-1, :]
             lrs = lrs[:, :, ::-1, :]
