@@ -68,7 +68,7 @@ class CASPEALR1(data.Dataset):
             if pose in [90, -90, 75, -75]:
                 continue
 
-            hr_f = hr_p[0:14] + "00_PM" + hr_p[19::]
+            hr_f = hr_p[0:14] + "00_PM+00" + hr_p[22::]
             names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
             names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
@@ -92,7 +92,7 @@ class CASPEALR1(data.Dataset):
             if pose not in self.testPose:
                 continue
 
-            hr_f = hr_p[0:14] + "00_PM" + hr_p[19::]
+            hr_f = hr_p[0:14] + "00_PM+00" + hr_p[22::]
             names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
             names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
