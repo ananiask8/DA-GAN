@@ -1,5 +1,6 @@
 import sys
 import os
+from os.path import exists
 import glob
 import time
 import skimage.color as sc
@@ -69,8 +70,9 @@ class CASPEALR1(data.Dataset):
                 continue
 
             hr_f = hr_p[0:14] + "00_PM+00" + hr_p[22::]
-            names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
-            names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
+            if exists(os.path.join(self.dir_hr_frontal, hr_f)):
+                names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
+                names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
         # names_hr : hr_f
         # names_lr : hr_p
@@ -93,8 +95,9 @@ class CASPEALR1(data.Dataset):
                 continue
 
             hr_f = hr_p[0:14] + "00_PM+00" + hr_p[22::]
-            names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
-            names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
+            if exists(os.path.join(self.dir_hr_frontal, hr_f)):
+                names_hr.append(os.path.join(self.dir_hr_frontal, hr_f))
+                names_lr.append(os.path.join(self.dir_hr_pose, hr_p))
 
         # names_hr : hr_f
         # names_lr : hr_p
